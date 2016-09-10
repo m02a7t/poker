@@ -1,7 +1,11 @@
-package poker;
-
 import java.util.*;
 import java.lang.Math;
+import java.io.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.io.IOException;
+
 /**
  * Created by dish on 9/9/16.
  * ranks are for poker, rank(ace) = 13 > rank(2) = 1
@@ -74,18 +78,66 @@ public class deck52 {
 
     } // end deck52() constructor
 
-    public static void main(String[] args)
+    public int[] shuffledeck()
+    {
+        int n = this.N;
+        int[] shuffledindex = new int[n];
+        for (int j = 0; j < n; j++)
+        {
+            shuffledindex[j] = this.deckindex[j];
+        }
+
+        for (int i = 0; i < n; i++)
+        {
+            int r = i + (int) (Math.random() * (n-i));
+            int temp = shuffledindex[r];
+            shuffledindex[r] = shuffledindex[i];
+            shuffledindex[i] = temp;
+        }
+
+        return shuffledindex;
+    }
+
+    public static void main(String[] args) throws IOException
 
     {
         deck52 deck = new deck52();
         int n = 52;
+        String path;
+        boolean append_to_file = false;
+        //path = "/home/dish/source/pokeroutput/shuffledindexpile.dat";
+        int[] sum = new int[52];
+        double[] mean = new double[52];
 
-        for (int i = 0; i < n; i++)
+        //FileWriter out = new FileWriter(path, append_to_file);
+        //PrintWriter print_line = new PrintWriter(out);
+
+
+        for (int run = 0; run < 10000; run++)
         {
-            System.out.println(deck.deckindex[i] + " = " + deck.face[i] + " of " + deck.suit[i] + " rank:" + deck.rank[i]);
+            int[] shuffled = deck.shuffledeck();
+            String line = "";
+
+            for (int i = 0; i < n; i++) {
+                //System.out.print(shuffled[i] + " ");
+                //line = line + Integer.toString(shuffled[i]) + ",";
+                sum[i]=sum[i]+shuffled[i];
+            }
+            //print_line.println(line);
+
+            //System.out.println(" ");
         }
+        //print_line.close();
+        double meanmean = 0;
+        for (int j = 0; j < n; j++)
+        {
+            mean[j]=(double)(sum[j])/10000;
+            meanmean=meanmean+mean[j];
+            System.out.println(mean[j]);
 
-
+        }
+        meanmean = meanmean/52;
+        System.out.println("meanmean = " + meanmean);
     }
 } // end deck52 class
 
